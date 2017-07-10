@@ -1588,10 +1588,11 @@ class TestDataApiClient(object):
                 acknowledged='all',
                 audit_date=None)
 
+
     def test_acknowledge_audit_event(self, data_client, rmock):
         rmock.post(
             "http://baseurl/audit-events/123/acknowledge",  # noqa
-            json={"audit-event": "result"},
+            json={"auditEvents": "result"},
             status_code=200,
         )
 
@@ -1600,7 +1601,24 @@ class TestDataApiClient(object):
             user='user')
 
         assert rmock.called
-        assert result == {"audit-event": "result"}
+        assert result == {"auditEvents": "result"}
+        assert rmock.request_history[0].json() == {
+            'updated_by': 'user'
+        }
+
+    def test_acknowledge_audit_event_including_previous(self, data_client, rmock):
+        rmock.post(
+            "http://baseurl/audit-events/123/acknowledge-including-previous",  # noqa
+            json={"auditEvents": ["results"]},
+            status_code=200,
+        )
+
+        result = data_client.acknowledge_audit_event_including_previous(
+            audit_event_id=123,
+            user='user')
+
+        assert rmock.called
+        assert result == {"auditEvents": ["results"]}
         assert rmock.request_history[0].json() == {
             'updated_by': 'user'
         }

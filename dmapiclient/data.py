@@ -61,6 +61,13 @@ class DataAPIClient(BaseAPIClient):
             user=user,
         )
 
+    def acknowledge_audit_event_including_previous(self, audit_event_id, user):
+        return self._post_with_updated_by(
+            "/audit-events/{}/acknowledge-including-previous".format(audit_event_id),
+            data={},
+            user=user,
+        )
+
     def create_audit_event(self, audit_type, user=None, data=None, object_type=None, object_id=None):
         if not isinstance(audit_type, AuditTypes):
             raise TypeError("Must be an AuditTypes")
