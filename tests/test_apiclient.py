@@ -1549,6 +1549,7 @@ class TestDataApiClient(object):
         url = (
             "http://baseurl/audit-events?object-type=foo&object-id=34&acknowledged=all&latest_first=True"
             "&audit-date=2010-01-01&page=12&audit-type=contact_update&per_page=23&earliest_for_each_object=True"
+            "&after-event-id=76"
         )
         rmock.get(
             url,
@@ -1564,6 +1565,7 @@ class TestDataApiClient(object):
             acknowledged='all',
             object_type='foo',
             object_id=34,
+            after_event_id=76,
             latest_first=True,
             earliest_for_each_object=True)
 

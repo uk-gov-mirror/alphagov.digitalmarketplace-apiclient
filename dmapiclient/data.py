@@ -20,6 +20,7 @@ class DataAPIClient(BaseAPIClient):
             acknowledged=None,
             object_type=None,
             object_id=None,
+            after_event_id=None,
             latest_first=None,
             earliest_for_each_object=None):
 
@@ -40,6 +41,8 @@ class DataAPIClient(BaseAPIClient):
             params['object-type'] = object_type
         if object_id is not None:
             params['object-id'] = object_id
+        if after_event_id is not None:
+            params['after-event-id'] = after_event_id
         if latest_first is not None:
             params['latest_first'] = latest_first
         if earliest_for_each_object is not None:
