@@ -119,7 +119,7 @@ class TestBaseApiClient(object):
         response_mock = self._from_httplib_response_mock(status)
         from_httplib.return_value = response_mock
 
-        with mock.patch('dmapiclient.base.BaseAPIClient.RETRIES', retry_count):
+        with mock.patch('dmapiclient.base.BaseAPIClient._RETRIES', retry_count):
             with pytest.raises(HTTPError) as e:
                 base_client._request("GET", '/')
 
