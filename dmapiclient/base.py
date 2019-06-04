@@ -49,7 +49,7 @@ def make_iter_method(method_name, *model_names):
     return iter_method
 
 
-class classproperty(object):
+class classproperty:
     def __init__(self, getter):
         self.getter = getter
 
@@ -93,7 +93,7 @@ class BaseAPIClient(object):
         return self._timeout
 
 
-    __slots__ = ("_base_url", "_auth_token", "_enabled", "_timeout",)
+    #__slots__ = ("_base_url", "_auth_token", "_enabled", "_timeout",)
 
 
     def __init__(self, base_url=None, auth_token=None, enabled=True, timeout=(15, 45,)):

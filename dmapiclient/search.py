@@ -13,7 +13,7 @@ from .errors import HTTPError
 
 
 class SearchAPIClient(BaseAPIClient):
-    __slots__ = ()
+    #__slots__ = ()
 
     def init_app(self, app):
         self._base_url = app.config['DM_SEARCH_API_URL']

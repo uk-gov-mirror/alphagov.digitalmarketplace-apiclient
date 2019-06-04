@@ -5,7 +5,7 @@ from .errors import HTTPError
 
 
 class DataAPIClient(BaseAPIClient):
-    __slots__ = ()
+    #__slots__ = ()
 
     def init_app(self, app):
         self._base_url = app.config['DM_DATA_API_URL']
