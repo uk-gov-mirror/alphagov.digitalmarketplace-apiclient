@@ -92,6 +92,14 @@ class BaseAPIClient(object):
     def timeout(self):
         return self._timeout
 
+    @property
+    def nowait_timeout(self):
+        read_timeout = 1.e-3
+        try:
+            return self.timeout[0], read_timeout
+        except (TypeError, LookupError):
+            return self._timeout, read_timeout
+
     def __init__(self, base_url=None, auth_token=None, enabled=True, timeout=(15, 45,)):
         self._base_url = base_url
         self._auth_token = auth_token
@@ -163,9 +171,19 @@ class BaseAPIClient(object):
         session.mount('https://', adapter)
         return session
 
-    def _request(self, method, url, data=None, params=None):
+    class _WontHappenException(Exception):
+        """
+            Not intended to ever be thrown, just used as a dummy to enable/disable conditionally-caught exception blocks
+        """
+        pass
+
+    def _request(self, method, url, data=None, params=None, *, client_wait_for_response: bool = True):
         if not self._enabled:
             return None
+
+        early_abort_exception = (
+            self._WontHappenException if client_wait_for_response else requests.exceptions.ReadTimeout
+        )
 
         url = self._build_url(url, params)
         headers = {
@@ -217,9 +235,23 @@ class BaseAPIClient(object):
                 url,
                 headers=ci_headers,
                 json=data,
-                timeout=self._timeout
+                timeout=self.timeout if client_wait_for_response else self.nowait_timeout,
             )
             response.raise_for_status()
+        except early_abort_exception:
+            # should only be possible if client_wait_for_response is False
+            elapsed_time = time.perf_counter() - start_time
+            logger.log(
+                logging.INFO,
+                "API {api_method} request on {api_url} dispatched but ignoring response",
+                extra={
+                    **common_log_extra,
+                    'api_method': method,
+                    'api_url': url,
+                    'api_time': elapsed_time,
+                },
+            )
+            return None
         except requests.RequestException as e:
             api_error = HTTPError.create(e)
             elapsed_time = time.perf_counter() - start_time
