@@ -436,6 +436,13 @@ class DataAPIClient(BaseAPIClient):
             if e.status_code not in [400, 403, 404]:
                 raise
 
+    def end_user_session(self, email_address, updated_by):
+        return self._put_with_updated_by(
+            "/users/end-session",
+            data={"authUsers": {"emailAddress": email_address}},
+            user=updated_by
+        )
+
     def update_user_password(self, user_id, new_password, updater="no logged-in user"):
         try:
             self._post_with_updated_by(

@@ -12,6 +12,8 @@ class AuditTypes(Enum):
     contact_update = "contact_update"
     create_supplier = "create_supplier"
     supplier_update = "supplier_update"
+    end_session = "end_session"
+    end_session = "end_session_failed"
 
     # Draft service lifecycle event
     create_draft_service = "create_draft_service"
